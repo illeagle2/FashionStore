@@ -56,12 +56,12 @@ fun FashionNavGraph(
         modifier = modifier
     ) {
         animatedComposable(Screen.Splash.route) {
-            //SplashScreen(onAction = actions::navigateToLogin)
-            SplashScreen(onAction = actions::navigateToHome)
+            SplashScreen(onAction = actions::navigateToLogin)
+            //SplashScreen(onAction = actions::navigateToHome)
         }
 
         animatedComposable(Screen.Login.route){
-            LoginScreen(navController = navController)
+            LoginScreen(onAction = actions::navigateToHome)
             //(onAction = actions::navigateToHome)
         }
 

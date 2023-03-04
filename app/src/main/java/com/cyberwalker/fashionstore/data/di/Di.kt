@@ -15,30 +15,25 @@
  */
 package com.cyberwalker.fashionstore.data.di
 
-import com.cyberwalker.fashionstore.data.HomeRepository
-import com.cyberwalker.fashionstore.data.source.HomeRemoteSource
-import com.cyberwalker.fashionstore.login.AccountService
-import com.cyberwalker.fashionstore.login.AccountServiceImpl
-import dagger.Binds
+import com.cyberwalker.fashionstore.data.AuthRepository
+import com.cyberwalker.fashionstore.data.AuthRepositoryImpl
+import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object Di {
+object AppModule {
+    @Provides
+    @Singleton
+    fun providesFirebaseAuth() = FirebaseAuth.getInstance()
 
-    fun getHomeRemoteSource() = HomeRemoteSource()
-
-    fun getHomeRepository(source: HomeRemoteSource) = HomeRepository(source)
+    @Provides
+    @Singleton
+    fun providesRepositoryImpl(firebaseAuth: FirebaseAuth): AuthRepository{
+        return AuthRepositoryImpl(firebaseAuth)
+    }
 }
-
-//@Module
-//@InstallIn(ViewModelComponent::class)
-//abstract class ServiceModule {
-//
-//    @Binds
-//    abstract fun provideAccountService(impl: AccountServiceImpl) : AccountService
-//}

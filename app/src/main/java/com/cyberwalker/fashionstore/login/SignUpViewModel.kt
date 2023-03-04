@@ -23,52 +23,27 @@ private lateinit var mAuth: FirebaseAuth
 
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class SignUpViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: AuthRepository
 ) : ViewModel() {
 
-    val _signInState = Channel<SignInState>()
-    val signInState = _signInState.receiveAsFlow()
+    val _signUpState = Channel<SignInState>()
+    val signUpState = _signUpState.receiveAsFlow()
 
     fun loginUser(email: String, password: String) = viewModelScope.launch {
-        repository.loginUser(email, password).collect{result ->
-            when(result){
+        repository.loginUser(email, password).collect { result ->
+            when (result) {
                 is Resource.Success -> {
-                    _signInState.send(SignInState(isSuccess = "Sign In Success"))
-                    LoginScreenActions.LoadHome
+                    _signUpState.send(SignInState(isSuccess = "Sign In Success"))
                 }
                 is Resource.Loading -> {
-                    _signInState.send(SignInState(isLoading = true))
+                    _signUpState.send(SignInState(isLoading = true))
                 }
                 is Resource.Error -> {
-                    _signInState.send(SignInState(isError = result.message))
+                    _signUpState.send(SignInState(isError = result.message))
                 }
             }
         }
     }
-
-
-    var uiState by mutableStateOf(LoginUiState())
-        private set
-
-//    private val email
-//        get() = uiState.email
-//
-//    private val password
-//        get() = uiState.password
-
-    fun login(userName: String, password: String): Boolean {
-        //code to call repo and check if username/password is valid
-        runBlocking{
-            //accountService.authenticate(userName, password)
-        }
-        return true
-    }
 }
-
-data class LoginUiState(
-    val loadComplete: Boolean = false,
-    val email: String = "",
-    val password: String = ""
-)

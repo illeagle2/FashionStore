@@ -8,14 +8,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -25,20 +26,40 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.cyberwalker.fashionstore.R
+import com.cyberwalker.fashionstore.home.HomeScreen
+import com.cyberwalker.fashionstore.splash.SplashScreenActions
 import com.cyberwalker.fashionstore.splash.SplashViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.coroutineContext
 
 
 @Composable
 fun LoginScreen(
+    viewModel: SplashViewModel = hiltViewModel(),
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
+    onAction: (actions: SplashScreenActions) -> Unit
+) {
+    Scaffold(
+        scaffoldState = scaffoldState
+    ) { innerPadding ->
+        LoginScreenContent(modifier = Modifier.padding(innerPadding), onAction = onAction)
+    }
+}
+@Composable
+fun LoginScreenContent(
+    modifier: Modifier,
+    onAction: (actions: SplashScreenActions) -> Unit,
     viewModel: LoginViewModel = hiltViewModel(),
-    navController: NavController
 ) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val state = viewModel.signInState.collectAsState(initial = null)
 
 
     Column(
@@ -53,16 +74,56 @@ fun LoginScreen(
             email,
             password,
             onLoginClick = {
-                if(viewModel.login(email, password)){
-                    navController.navigate("user_screen/$email")
-                }else{
-                    //navigate to error or new user screen
-                    //navController.navigate()
-                }
-            },
+                   scope.launch{
+                       viewModel.loginUser(email, password)
+                       onAction(SplashScreenActions.LoadHome)
+                   }
+                },
             onEmailChange = { email = it},
             onPasswordChange = { password = it}
         )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            if (state.value?.isLoading == true){
+                CircularProgressIndicator()
+            }
+
+        }
+        Text(text = "or connect with", fontWeight = FontWeight.Medium, color = Color.Gray)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_google),
+                    contentDescription = "Google Icon",
+                    modifier = Modifier.size(50.dp),
+                    tint = Color.Unspecified
+                )
+            }
+            Spacer(modifier = Modifier.width(20.dp))
+            LaunchedEffect(key1 = state.value?.isSuccess){
+                scope.launch {
+                    if (state.value?.isSuccess?.isNotBlank() == true){
+                        val success = state.value?.isSuccess
+                        Toast.makeText(context, "${success}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+            LaunchedEffect(key1 = state.value?.isError){
+                scope.launch {
+                    if (state.value?.isError?.isNotBlank() == true){
+                        val error = state.value?.isError
+                        Toast.makeText(context, "${error}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -123,4 +184,8 @@ fun LoginFields(
         }
     }
 
+}
+
+sealed class LoginScreenActions {
+    object LoadHome: LoginScreenActions()
 }
