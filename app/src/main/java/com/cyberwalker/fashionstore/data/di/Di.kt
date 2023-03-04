@@ -17,8 +17,13 @@ package com.cyberwalker.fashionstore.data.di
 
 import com.cyberwalker.fashionstore.data.HomeRepository
 import com.cyberwalker.fashionstore.data.source.HomeRemoteSource
+import com.cyberwalker.fashionstore.login.AccountService
+import com.cyberwalker.fashionstore.login.AccountServiceImpl
+import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.components.SingletonComponent
 
 @Module
@@ -29,3 +34,11 @@ object Di {
 
     fun getHomeRepository(source: HomeRemoteSource) = HomeRepository(source)
 }
+
+//@Module
+//@InstallIn(ViewModelComponent::class)
+//abstract class ServiceModule {
+//
+//    @Binds
+//    abstract fun provideAccountService(impl: AccountServiceImpl) : AccountService
+//}

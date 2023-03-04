@@ -17,10 +17,11 @@ package com.cyberwalker.fashionstore.home
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -126,7 +127,8 @@ private fun HomeScreenContent(
                 .padding(start = 24.dp)
                 .defaultMinSize(minHeight = 228.dp)
         ) {
-            TabRow()
+            //TabRow()
+            TabPromo(promo = listOf("Shoes", "Belts", "Shirts", "Jackets", "Dresses", "Hats"))
             Spacer(modifier = Modifier.size(16.dp))
             Image(
                 modifier = Modifier.defaultMinSize(300.dp, 264.dp),
@@ -161,6 +163,7 @@ private fun HomeScreenContent(
                 .defaultMinSize(minHeight = 228.dp)
         ) {
             TabRow()
+            //TabPromo(promo = listOf("Shoes", "Belts", "Shirts", "Jackets", "Dresses", "Hats"))
             Spacer(modifier = Modifier.size(16.dp))
             GridOfImages(onAction = onAction)
         }
@@ -230,7 +233,8 @@ private fun GridOfImages(onAction: (actions: HomeScreenActions) -> Unit,) {
                     contentDescription = null,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(end = 8.dp, top = 8.dp).clickable {  }
+                        .padding(end = 8.dp, top = 8.dp)
+                        .clickable { }
                 )
             }
             Spacer(modifier = Modifier.size(8.dp))
@@ -259,7 +263,8 @@ private fun GridOfImages(onAction: (actions: HomeScreenActions) -> Unit,) {
                     contentDescription = null,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(end = 8.dp, top = 8.dp).clickable {  }
+                        .padding(end = 8.dp, top = 8.dp)
+                        .clickable { }
                 )
             }
             Spacer(modifier = Modifier.size(8.dp))
@@ -290,7 +295,8 @@ private fun GridOfImages(onAction: (actions: HomeScreenActions) -> Unit,) {
                     contentDescription = null,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(end = 8.dp, top = 8.dp).clickable {  }
+                        .padding(end = 8.dp, top = 8.dp)
+                        .clickable { }
                 )
             }
             Spacer(modifier = Modifier.size(8.dp))
@@ -319,7 +325,8 @@ private fun GridOfImages(onAction: (actions: HomeScreenActions) -> Unit,) {
                     contentDescription = null,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(end = 8.dp, top = 8.dp).clickable {  }
+                        .padding(end = 8.dp, top = 8.dp)
+                        .clickable { }
                 )
             }
             Spacer(modifier = Modifier.size(8.dp))
