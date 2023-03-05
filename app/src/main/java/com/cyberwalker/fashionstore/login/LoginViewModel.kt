@@ -1,6 +1,7 @@
 package com.cyberwalker.fashionstore.login
 
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cyberwalker.fashionstore.data.AuthRepository
 import com.cyberwalker.fashionstore.utils.Resource
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -31,6 +33,9 @@ class LoginViewModel @Inject constructor(
     val _signInState = Channel<SignInState>()
     val signInState = _signInState.receiveAsFlow()
 
+    val _googleState = mutableStateOf(GoogleSignInState())
+    val googleState: State<GoogleSignInState> = _googleState
+
     fun loginUser(email: String, password: String) = viewModelScope.launch {
         repository.loginUser(email, password).collect{result ->
             when(result){
@@ -48,27 +53,26 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun googleSignIn(credential: AuthCredential) = viewModelScope.launch {
+        repository.googleSignIn(credential).collect{result ->
+            when(result){
+                is Resource.Success -> {
+                    _googleState.value = GoogleSignInState(success = result.data)
+                }
+                is Resource.Loading -> {
+                    _googleState.value = GoogleSignInState(loading = true)
+                }
+                is Resource.Error -> {
+                    _googleState.value = GoogleSignInState(error = result.message.toString())
+                }
+            }
 
-    var uiState by mutableStateOf(LoginUiState())
-        private set
-
-//    private val email
-//        get() = uiState.email
-//
-//    private val password
-//        get() = uiState.password
-
-    fun login(userName: String, password: String): Boolean {
-        //code to call repo and check if username/password is valid
-        runBlocking{
-            //accountService.authenticate(userName, password)
         }
-        return true
     }
-}
 
-data class LoginUiState(
-    val loadComplete: Boolean = false,
-    val email: String = "",
-    val password: String = ""
-)
+    fun logOutUser(){
+        repository.logOutUser()
+    }
+
+
+}

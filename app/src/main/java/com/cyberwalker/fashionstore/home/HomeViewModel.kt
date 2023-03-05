@@ -21,13 +21,17 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cyberwalker.fashionstore.data.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : ViewModel() {
+class HomeViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val repository: AuthRepository
+) : ViewModel() {
 
     var uiState by mutableStateOf(HomeUiState())
         private set

@@ -3,6 +3,8 @@ package com.cyberwalker.fashionstore.login
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -30,6 +32,11 @@ import com.cyberwalker.fashionstore.R
 import com.cyberwalker.fashionstore.home.HomeScreen
 import com.cyberwalker.fashionstore.splash.SplashScreenActions
 import com.cyberwalker.fashionstore.splash.SplashViewModel
+import com.cyberwalker.fashionstore.utils.Constants
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.coroutineContext
@@ -60,6 +67,19 @@ fun LoginScreenContent(
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val state = viewModel.signInState.collectAsState(initial = null)
+    val googleSignInState = viewModel.googleState.value
+
+    val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult()){
+            val account = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+            try {
+                val result = account.getResult(ApiException::class.java)
+                val credentials = GoogleAuthProvider.getCredential(result.idToken, null)
+                viewModel.googleSignIn(credentials)
+            } catch (it: ApiException) {
+                Log.d("Google Launcher", "Error: ${it.message}")
+            }
+        }
 
 
     Column(
@@ -75,6 +95,8 @@ fun LoginScreenContent(
             password,
             onLoginClick = {
                    scope.launch{
+                       //I need another way to logout the user before each use
+                       //viewModel.logOutUser()
                        viewModel.loginUser(email, password)
                        onAction(SplashScreenActions.LoadHome)
                    }
@@ -98,7 +120,18 @@ fun LoginScreenContent(
                 .padding(top = 10.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {
+                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestEmail()
+                    .requestIdToken(Constants.ServerClient)
+                    .build()
+
+                val googleSignInClient = GoogleSignIn.getClient(context, gso)
+
+                launcher.launch(googleSignInClient.signInIntent)
+                
+
+            }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_google),
                     contentDescription = "Google Icon",
@@ -120,6 +153,13 @@ fun LoginScreenContent(
                     if (state.value?.isError?.isNotBlank() == true){
                         val error = state.value?.isError
                         Toast.makeText(context, "${error}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+            LaunchedEffect(key1 = googleSignInState.success){
+                scope.launch {
+                    if (googleSignInState.success != null) {
+                        Toast.makeText(context, "Google Sign-in Success", Toast.LENGTH_LONG).show()
                     }
                 }
             }
