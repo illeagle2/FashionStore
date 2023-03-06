@@ -44,7 +44,7 @@ import kotlin.coroutines.coroutineContext
 
 @Composable
 fun LoginScreen(
-    viewModel: SplashViewModel = hiltViewModel(),
+    viewModel: LoginViewModel = hiltViewModel(),
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     onAction: (actions: SplashScreenActions) -> Unit
 ) {
@@ -95,10 +95,9 @@ fun LoginScreenContent(
             password,
             onLoginClick = {
                    scope.launch{
-                       //I need another way to logout the user before each use
-                       //viewModel.logOutUser()
                        viewModel.loginUser(email, password)
-                       onAction(SplashScreenActions.LoadHome)
+                       //moved this action to the success launch effect
+                       //onAction(SplashScreenActions.LoadHome)
                    }
                 },
             onEmailChange = { email = it},
@@ -145,6 +144,8 @@ fun LoginScreenContent(
                     if (state.value?.isSuccess?.isNotBlank() == true){
                         val success = state.value?.isSuccess
                         Toast.makeText(context, "${success}", Toast.LENGTH_LONG).show()
+                        onAction(SplashScreenActions.LoadHome)
+
                     }
                 }
             }
@@ -160,6 +161,7 @@ fun LoginScreenContent(
                 scope.launch {
                     if (googleSignInState.success != null) {
                         Toast.makeText(context, "Google Sign-in Success", Toast.LENGTH_LONG).show()
+                        onAction(SplashScreenActions.LoadHome)
                     }
                 }
             }

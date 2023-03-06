@@ -27,7 +27,8 @@ private lateinit var mAuth: FirebaseAuth
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: AuthRepository
+    private val repository: AuthRepository,
+    private val firebaseAuth: FirebaseAuth
 ) : ViewModel() {
 
     val _signInState = Channel<SignInState>()
@@ -35,6 +36,7 @@ class LoginViewModel @Inject constructor(
 
     val _googleState = mutableStateOf(GoogleSignInState())
     val googleState: State<GoogleSignInState> = _googleState
+
 
     fun loginUser(email: String, password: String) = viewModelScope.launch {
         repository.loginUser(email, password).collect{result ->
@@ -58,6 +60,7 @@ class LoginViewModel @Inject constructor(
             when(result){
                 is Resource.Success -> {
                     _googleState.value = GoogleSignInState(success = result.data)
+                    LoginScreenActions.LoadHome
                 }
                 is Resource.Loading -> {
                     _googleState.value = GoogleSignInState(loading = true)
@@ -71,7 +74,13 @@ class LoginViewModel @Inject constructor(
     }
 
     fun logOutUser(){
-        repository.logOutUser()
+        firebaseAuth.signOut()
+    }
+
+
+    //auto logout when loaded
+    init {
+        firebaseAuth.signOut()
     }
 
 
