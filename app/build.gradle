@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -53,6 +54,8 @@ dependencies {
     implementation 'androidx.core:core-ktx:+'
     implementation 'com.google.firebase:firebase-auth-ktx:21.0.3'
     implementation 'com.google.android.gms:play-services-auth:20.4.0'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.2.9'
+    implementation 'com.google.firebase:firebase-analytics-ktx:20.1.2'
     def accompanist = '0.23.0'
     def archLifecycleVersion = '2.5.1'
     def nav_version = "2.5.0"
