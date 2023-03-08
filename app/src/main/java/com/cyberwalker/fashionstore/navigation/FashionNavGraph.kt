@@ -28,7 +28,10 @@ import com.cyberwalker.fashionstore.detail.DetailScreenActions
 import com.cyberwalker.fashionstore.dump.animatedComposable
 import com.cyberwalker.fashionstore.home.HomeScreen
 import com.cyberwalker.fashionstore.home.HomeScreenActions
+import com.cyberwalker.fashionstore.liked.LikedScreen
 import com.cyberwalker.fashionstore.login.LoginScreen
+import com.cyberwalker.fashionstore.profile.ProfileScreen
+import com.cyberwalker.fashionstore.search.SearchScreen
 import com.cyberwalker.fashionstore.splash.SplashScreen
 import com.cyberwalker.fashionstore.splash.SplashScreenActions
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -39,6 +42,9 @@ sealed class Screen(val name: String, val route: String) {
     object Home : Screen("home", "home")
     object Detail : Screen("detail", "detail")
     object Login: Screen("login", "login")
+    object Search: Screen("search", "search")
+    object Liked: Screen("liked", "liked")
+    object Profile: Screen("profile", "profile")
 }
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -71,6 +77,18 @@ fun FashionNavGraph(
 
         animatedComposable(Screen.Detail.route) {
             DetailScreen(onAction = actions::navigateFromDetails)
+        }
+
+        animatedComposable(Screen.Search.route){
+            SearchScreen(onAction = actions::navigateFromHome, navController = navController)
+        }
+
+        animatedComposable(Screen.Liked.route){
+            LikedScreen(onAction = actions::navigateFromHome, navController = navController)
+        }
+
+        animatedComposable(Screen.Profile.route){
+            ProfileScreen(onAction = actions::navigateFromHome, navController = navController)
         }
     }
 }
