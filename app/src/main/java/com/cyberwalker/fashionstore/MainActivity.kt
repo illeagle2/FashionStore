@@ -15,7 +15,9 @@
  */
 package com.cyberwalker.fashionstore
 
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,6 +44,27 @@ class MainActivity : ComponentActivity() {
                 ) {
                     App()
                 }
+            }
+        }
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        // in this method we are checking if the request code
+        // which we have passed 101 is same.
+        if (requestCode == 101) {
+            // if request code is 101 and permissions are granted.
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                // on below line we are displaying a toast message.
+                Toast.makeText(this, "Storage permission granted", Toast.LENGTH_SHORT).show()
+            } else {
+                // on below line we are displaying a toast message.
+                Toast.makeText(this, "Storage permission denied", Toast.LENGTH_SHORT).show()
             }
         }
     }
