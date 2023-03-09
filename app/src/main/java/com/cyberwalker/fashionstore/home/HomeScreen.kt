@@ -17,7 +17,6 @@ package com.cyberwalker.fashionstore.home
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -31,34 +30,40 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.cyberwalker.fashionstore.R
-import com.cyberwalker.fashionstore.dump.BottomNav
+import com.cyberwalker.fashionstore.dump.BottomBar
 import com.cyberwalker.fashionstore.dump.vertical
 import com.cyberwalker.fashionstore.ui.theme.*
 
+
 @Composable
-fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel(),
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
-    onAction: (actions: HomeScreenActions) -> Unit,
-    navController: NavHostController
-) {
+fun HomeScreen(navController: NavHostController = rememberNavController()) {
     Scaffold(
-        scaffoldState = scaffoldState,
-        bottomBar = {
-            BottomNav(navController = navController)
-        }
-    ) { innerPadding ->
-        HomeScreenContent(modifier = Modifier.padding(innerPadding), onAction = onAction)
+    bottomBar = { BottomBar(navController = navController) },
+    content = { padding -> HomeScreenContent(modifier = Modifier.padding(padding)){} }
+    )
+}
+
+@Composable
+fun ScreenContent(name: String, onClick: () -> Unit){
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = name,
+            modifier = Modifier.clickable { onClick() },
+            fontSize = MaterialTheme.typography.h3.fontSize
+        )
     }
 }
 
 @Composable
-private fun HomeScreenContent(
+fun HomeScreenContent(
     modifier: Modifier,
-    onAction: (actions: HomeScreenActions) -> Unit,
+    onClicked: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -165,7 +170,7 @@ private fun HomeScreenContent(
             TabRow()
             //TabPromo(promo = listOf("Shoes", "Belts", "Shirts", "Jackets", "Dresses", "Hats"))
             Spacer(modifier = Modifier.size(16.dp))
-            GridOfImages(onAction = onAction)
+            GridOfImages(onAction = {})
         }
     }
 }

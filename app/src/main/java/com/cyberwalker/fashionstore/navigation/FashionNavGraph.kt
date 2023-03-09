@@ -17,110 +17,57 @@
 
 package com.cyberwalker.fashionstore.navigation
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.navigation.NavHostController
-import com.cyberwalker.fashionstore.detail.DetailScreen
-import com.cyberwalker.fashionstore.detail.DetailScreenActions
-import com.cyberwalker.fashionstore.dump.animatedComposable
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.cyberwalker.fashionstore.home.HomeScreen
-import com.cyberwalker.fashionstore.home.HomeScreenActions
-import com.cyberwalker.fashionstore.liked.LikedScreen
 import com.cyberwalker.fashionstore.login.LoginScreen
-import com.cyberwalker.fashionstore.profile.ProfileScreen
-import com.cyberwalker.fashionstore.search.SearchScreen
 import com.cyberwalker.fashionstore.splash.SplashScreen
-import com.cyberwalker.fashionstore.splash.SplashScreenActions
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
-sealed class Screen(val name: String, val route: String) {
-    object Splash : Screen("splash", "splash")
-    object Home : Screen("home", "home")
-    object Detail : Screen("detail", "detail")
-    object Login: Screen("login", "login")
-    object Search: Screen("search", "search")
-    object Liked: Screen("liked", "liked")
-    object Profile: Screen("profile", "profile")
-}
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun FashionNavGraph(
-    modifier: Modifier = Modifier,
-    navController: NavHostController = rememberAnimatedNavController(),
-    actions: NavActions = remember(navController) {
-        NavActions(navController)
-    }
-) {
-    AnimatedNavHost(
+fun FashionNavGraph(navController: NavHostController) {
+    NavHost(
         navController = navController,
-        startDestination = Screen.Splash.route,
-        modifier = modifier
+        route = Graph.ROOT,
+        startDestination = Graph.SPLASH,
     ) {
-        animatedComposable(Screen.Splash.route) {
-            SplashScreen(onAction = actions::navigateToLogin)
-            //SplashScreen(onAction = actions::navigateToHome)
+
+       // authNavGraph(navController = navController)
+//        composable(route = Graph.HOME){
+//            HomeScreen()
+//        }
+        composable(route= Graph.SPLASH){
+            SplashScreen(onClick = {
+                navController.popBackStack()
+                navController.navigate(Graph.LOGIN)
+            }
+            )
+        }
+        composable(route= Graph.LOGIN) {
+            LoginScreen(
+                onLoginClick = {
+                    navController.popBackStack()
+                    navController.navigate(Graph.HOME)
+                }
+            )
+        }
+        composable(route = Graph.HOME){
+            HomeScreen()
         }
 
-        animatedComposable(Screen.Login.route){
-            LoginScreen(onAction = actions::navigateToHome)
-            //(onAction = actions::navigateToHome)
-        }
 
-        animatedComposable(Screen.Home.route) {
-            HomeScreen(onAction = actions::navigateFromHome,navController = navController)
-        }
-
-        animatedComposable(Screen.Detail.route) {
-            DetailScreen(onAction = actions::navigateFromDetails)
-        }
-
-        animatedComposable(Screen.Search.route){
-            SearchScreen(onAction = actions::navigateFromHome, navController = navController)
-        }
-
-        animatedComposable(Screen.Liked.route){
-            LikedScreen(onAction = actions::navigateFromHome, navController = navController)
-        }
-
-        animatedComposable(Screen.Profile.route){
-            ProfileScreen(onAction = actions::navigateFromHome, navController = navController)
-        }
     }
 }
 
-class NavActions(private val navController: NavController) {
-    fun navigateToHome(_A: SplashScreenActions) {
-        navController.navigate(Screen.Home.name) {
-            popUpTo(Screen.Splash.route){
-                inclusive = true
-            }
-        }
-    }
-
-    fun navigateToLogin(_A: SplashScreenActions){
-        navController.navigate(Screen.Login.name){
-            popUpTo(Screen.Splash.route){
-                inclusive = true
-            }
-        }
-    }
-
-    fun navigateFromHome(actions: HomeScreenActions) {
-        when (actions) {
-            HomeScreenActions.Details -> {
-                navController.navigate(Screen.Detail.name)
-            }
-        }
-    }
-
-    fun navigateFromDetails(actions: DetailScreenActions) {
-        when(actions) {
-            DetailScreenActions.Back -> navController.popBackStack()
-        }
-    }
+object Graph {
+    const val ROOT = "root_graph"//
+    const val DETAILS = "details_graph"
+    const val SPLASH ="splash"
+    const val LOGIN = "login"
+    const val HOME = "home_graph"
+//    const val AUTHENTICATION = "auth_graph"
 }

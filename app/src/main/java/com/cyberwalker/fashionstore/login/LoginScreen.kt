@@ -29,7 +29,6 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.cyberwalker.fashionstore.R
-import com.cyberwalker.fashionstore.home.HomeScreen
 import com.cyberwalker.fashionstore.splash.SplashScreenActions
 import com.cyberwalker.fashionstore.splash.SplashViewModel
 import com.cyberwalker.fashionstore.utils.Constants
@@ -45,20 +44,7 @@ import kotlin.coroutines.coroutineContext
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
-    onAction: (actions: SplashScreenActions) -> Unit
-) {
-    Scaffold(
-        scaffoldState = scaffoldState
-    ) { innerPadding ->
-        LoginScreenContent(modifier = Modifier.padding(innerPadding), onAction = onAction)
-    }
-}
-@Composable
-fun LoginScreenContent(
-    modifier: Modifier,
-    onAction: (actions: SplashScreenActions) -> Unit,
-    viewModel: LoginViewModel = hiltViewModel(),
+    onLoginClick: () -> Unit
 ) {
 
     var email by remember { mutableStateOf("") }
@@ -145,7 +131,8 @@ fun LoginScreenContent(
                     if (state.value?.isSuccess?.isNotBlank() == true){
                         val success = state.value?.isSuccess
                         Toast.makeText(context, "${success}", Toast.LENGTH_LONG).show()
-                        onAction(SplashScreenActions.LoadHome)
+                        onLoginClick()
+                        //onAction(SplashScreenActions.LoadHome)
 
                     }
                 }
@@ -162,7 +149,7 @@ fun LoginScreenContent(
                 scope.launch {
                     if (googleSignInState.success != null) {
                         Toast.makeText(context, "Google Sign-in Success", Toast.LENGTH_LONG).show()
-                        onAction(SplashScreenActions.LoadHome)
+                        //onAction(SplashScreenActions.LoadHome)
                     }
                 }
             }

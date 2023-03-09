@@ -8,9 +8,8 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.cyberwalker.fashionstore.dump.BottomNav
+import com.cyberwalker.fashionstore.dump.BottomBar
 import com.cyberwalker.fashionstore.home.HomeScreenActions
-import com.cyberwalker.fashionstore.search.SearchScreenContent
 
 @Composable
 fun LikedScreen(
@@ -22,15 +21,15 @@ fun LikedScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {
-            BottomNav(navController = navController)
+            BottomBar(navController = navController)
         }
     ) { innerPadding ->
-        LikedScreenContent(modifier = Modifier.padding(innerPadding), onAction = onAction)
+        LikedScreenContent(modifier = Modifier.padding(innerPadding))
     }
 }
 
 @Composable
-fun LikedScreenContent(modifier: Modifier, onAction: (actions: HomeScreenActions) -> Unit) {
+fun LikedScreenContent(modifier: Modifier) {
 
     Text(text = "Liked Screen")
 }

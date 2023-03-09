@@ -8,9 +8,8 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.cyberwalker.fashionstore.dump.BottomNav
+import com.cyberwalker.fashionstore.dump.BottomBar
 import com.cyberwalker.fashionstore.home.HomeScreenActions
-import com.cyberwalker.fashionstore.search.SearchScreenContent
 
 @Composable
 fun ProfileScreen(
@@ -22,15 +21,15 @@ fun ProfileScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = {
-            BottomNav(navController = navController)
+            BottomBar(navController = navController)
         }
     ) { innerPadding ->
-        ProfileScreenContent(modifier = Modifier.padding(innerPadding), onAction = onAction)
+        ProfileScreenContent(modifier = Modifier.padding(innerPadding))
     }
 }
 
 @Composable
-fun ProfileScreenContent(modifier: Modifier, onAction: (actions: HomeScreenActions) -> Unit) {
+fun ProfileScreenContent(modifier: Modifier) {
 
     Text(text = "Profile Screen")
 }

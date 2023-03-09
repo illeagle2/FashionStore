@@ -44,21 +44,10 @@ import com.cyberwalker.fashionstore.ui.theme.small_caption
 
 @Composable
 fun SplashScreen(
-    viewModel: SplashViewModel = hiltViewModel(),
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
-    onAction: (actions: SplashScreenActions) -> Unit
+    onClick: () -> Unit
 ) {
-    Scaffold(
-        scaffoldState = scaffoldState
-    ) { innerPadding ->
-        SplashScreenContent(modifier = Modifier.padding(innerPadding), onAction = onAction)
-    }
-}
-
-@Composable
-private fun SplashScreenContent(modifier: Modifier, onAction: (actions: SplashScreenActions) -> Unit) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .padding(40.dp)
             .fillMaxHeight()
             .semantics { contentDescription = "Splash Screen" }
@@ -93,8 +82,8 @@ private fun SplashScreenContent(modifier: Modifier, onAction: (actions: SplashSc
             modifier = Modifier
                 .weight(1F)
                 .align(Alignment.CenterHorizontally).clickable {
-                    checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 101,  activity!!)
-                    onAction(SplashScreenActions.LoadHome)
+                    //checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, 101,  activity!!)
+                    onClick()
                 },
             painter = painterResource(id = R.drawable.splash_cta),
             contentDescription = null

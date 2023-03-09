@@ -27,6 +27,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import com.cyberwalker.fashionstore.navigation.FashionNavGraph
 import com.cyberwalker.fashionstore.ui.theme.FashionStoreTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -72,7 +73,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun App() {
-    FashionNavGraph()
+    FashionNavGraph(navController = rememberNavController())
 }
 
 @Preview(showBackground = true)
